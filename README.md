@@ -112,6 +112,7 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 - [awesome-fuzzing](https://github.com/cpuu/awesome-fuzzing) - A curated list of awesome Fuzzing(or Fuzz Testing) for software security.
 - [Awesome-SOAR](https://github.com/correlatedsecurity/Awesome-SOAR) - A curated Cyber "Security Orchestration, Automation and Response (SOAR)" awesome list.
 - [awesome-ctf](https://github.com/apsdehal/awesome-ctf) - A curated list of CTF frameworks, libraries, resources and softwares.
+- [oopssec-store](https://github.com/kOaDT/oss-oopssec-store) - An intentionally vulnerable e-commerce application built with Next.js for web security training and CTF practice.
 
 ## Information
 
