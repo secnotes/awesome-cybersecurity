@@ -15,10 +15,7 @@ A collection of awesome repositories about security on GitHub. We use *Python We
 
 Awesome cybersecurity repositories (Data is automatically updated regularly)
 
-👉 Chinese is available 中文
-
-- [网络安全资源精选](https://www.freebuf.com/news/323897.html)（Freebuf 博客，中译版）
-- [网络安全中文资源精选](https://github.com/secnotes/awesome-cybersecurity/blob/main/README_ZH.md)（非英文版翻译，专注于网络安全中文学习资料，正在完善中.）
+[English](README.md) | [中文](README_ZH.md)
 
 ## Contents
 
