@@ -42,13 +42,13 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 
 ## System
 
-- [android-security-awesome](https://github.com/ashishb/android-security-awesome) - A collection of android security related resources.
+- [android-security-awesome](https://github.com/ashishb/android-security-awesome) - A collection of Android security related resources.
 - [awesome-android-security](https://github.com/saeidshirazi/awesome-android-security) - A curated list of Android Security materials and resources For Pentesters and Bug Hunters.
 - [osx-and-ios-security-awesome](https://github.com/ashishb/osx-and-ios-security-awesome) - macOS and iOS related security tools.
 - [osx-security-awesome](https://github.com/kai5263499/osx-security-awesome) - A collection of macOS and iOS security resources.
 - [awesome-windows-domain-hardening](https://github.com/PaulSec/awesome-windows-domain-hardening) - A curated list of awesome Security Hardening techniques for Windows.
 - [awesome-windows-kernel-security-development](https://github.com/ExpLife0011/awesome-windows-kernel-security-development) - Windows kernel security development.
-- [awesome-windows-security-development](https://github.com/howknows/awesome-windows-security-development) - Awesome-windows-security-development.
+- [awesome-windows-security-development](https://github.com/howknows/awesome-windows-security-development) - A collection of Windows security development resources.
 - [awesome-industrial-control-system-security](https://github.com/hslatman/awesome-industrial-control-system-security) - A curated list of resources related to Industrial Control System (ICS) security.
 
 ## Protocol
@@ -76,7 +76,7 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 ## Terminals
 
 - [awesome-vehicle-security](https://github.com/jaredthecoder/awesome-vehicle-security) - A curated list of resources for learning about vehicle *security* and car hacking.
-- [awesome-mobile-security](https://github.com/vaib25vicky/awesome-mobile-security) - An effort to build a single place for all useful android and iOS security related stuff.
+- [awesome-mobile-security](https://github.com/vaib25vicky/awesome-mobile-security) - An effort to build a single place for all useful Android and iOS security related stuff.
 - [awesome-embedded-and-iot-security](https://github.com/fkie-cad/awesome-embedded-and-iot-security) - A curated list of awesome embedded and IoT security resources.
 - [awesome-firmware-security](https://github.com/PreOS-Security/awesome-firmware-security) - Awesome Firmware Security & Other Helpful Documents.
 
@@ -105,7 +105,7 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 - [cybersecurity-red-team](https://github.com/paulveillard/cybersecurity-red-team) - A collection of awesome software, libraries, learning tutorials, documents and books, technical resources and cool stuff about Red Team in Cybersecurity.
 - [awesome-incident-response](https://github.com/meirwah/awesome-incident-response) - A curated list of tools for incident response.
 - [awesome-malware-analysis](https://github.com/rshipp/awesome-malware-analysis) - Defund the Police.
-- [awesome-linux-rootkits](https://github.com/milabs/awesome-linux-rootkits) - Awesome-linux-rootkits.
+- [awesome-linux-rootkits](https://github.com/milabs/awesome-linux-rootkits) - A curated list of Linux rootkits and related resources.
 - [awesome-fuzzing](https://github.com/cpuu/awesome-fuzzing) - A curated list of awesome Fuzzing(or Fuzz Testing) for software security.
 - [Awesome-SOAR](https://github.com/correlatedsecurity/Awesome-SOAR) - A curated Cyber "Security Orchestration, Automation and Response (SOAR)" awesome list.
 - [awesome-ctf](https://github.com/apsdehal/awesome-ctf) - A curated list of CTF frameworks, libraries, resources and softwares.
