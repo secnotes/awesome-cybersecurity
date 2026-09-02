@@ -23,6 +23,7 @@ import time
 import sys
 import random
 import re
+import os
 
 class GitHubRepoCrawler:
     def __init__(self, token=None, fallback_proxies=None):
@@ -235,7 +236,8 @@ def main():
         sys.exit(1)
 
     # 配置
-    token = ''  # 可选: 在这里填入 GitHub Token 以提高速率限制
+    # 优先从环境变量读取 (CI 会自动注入 GITHUB_TOKEN)，本地可留空走未认证模式
+    token = os.environ.get('GITHUB_TOKEN', '').strip()  # 可选: 也可在这里硬编码 GitHub Token
     fallback_proxies = {  # 备用代理（直连失败时自动切换）
         'http': 'http://192.168.17.1:10808',
         'https': 'http://192.168.17.1:10808',
