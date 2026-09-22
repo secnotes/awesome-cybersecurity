@@ -1,15 +1,16 @@
 '''
-Author: Sec Notes
+Author: Security Notes (github.com/secnotes)
 Version: 2.0
-Date: 2026-04-28
-Description: 使用 GitHub Search API 直接获取仓库信息
+Date: 2026-09-21
+Description: Fetch repository data directly via the GitHub Search API
+描述: 使用 GitHub Search API 直接获取仓库信息
 优化点:
 1. 直接使用 GitHub Search API，一次请求获取完整信息
 2. 无需额外请求获取创建时间
 3. 添加进度显示
 4. 支持可选的 GitHub Token
-5. 默认直连，网络失败时自动切换代理
-6. 过滤描述包含中文或超过300字的项目
+5. 如需代理，设置 HTTPS_PROXY 环境变量即可（requests 原生支持）
+6. 保留中文描述的项目，仅过滤描述超过300字的项目
 Rate Limits:
 - 未认证: 10 requests/minute, 60 requests/hour
 - 认证: 30 requests/minute, 5000 requests/hour
@@ -22,14 +23,11 @@ import csv
 import time
 import sys
 import random
-import re
 import os
 
 class GitHubRepoCrawler:
-    def __init__(self, token=None, fallback_proxies=None):
+    def __init__(self, token=None):
         self.token = token
-        self.fallback_proxies = fallback_proxies  # 备用代理（网络失败时使用）
-        self.using_proxy = False  # 当前是否使用代理
         self.headers = {
             'Accept': 'application/vnd.github+json',
             'X-GitHub-Api-Version': '2022-11-28',
@@ -37,29 +35,19 @@ class GitHubRepoCrawler:
         if token:
             self.headers['Authorization'] = f'Bearer {token}'
 
-        # 禁用 SSL 警告（代理模式需要）
-        if fallback_proxies:
-            requests.packages.urllib3.disable_warnings()
-
         self.base_url = 'https://api.github.com/search/repositories'
 
-    def _do_request(self, params, use_proxy=False):
+    def _do_request(self, params):
         """
         执行请求
         :param params: 请求参数
-        :param use_proxy: 是否使用代理
         :return: response 或 None
         """
-        proxies = self.fallback_proxies if use_proxy else None
-        verify = False if use_proxy else True
-
         try:
             response = requests.get(
                 self.base_url,
                 params=params,
                 headers=self.headers,
-                proxies=proxies,
-                verify=verify,
                 timeout=30
             )
             return response
@@ -95,9 +83,7 @@ class GitHubRepoCrawler:
         max_retries = 5
         for attempt in range(max_retries):
             try:
-                # 优先使用直连，失败后切换代理
-                use_proxy = self.using_proxy
-                response = self._do_request(params, use_proxy=use_proxy)
+                response = self._do_request(params)
 
                 # 检查速率限制
                 if response.status_code == 403:
@@ -126,14 +112,7 @@ class GitHubRepoCrawler:
                 error_msg = str(e)
                 print(f"  ⚠️ {error_msg}")
 
-                # 如果直连失败且有备用代理，切换到代理模式
-                if not self.using_proxy and self.fallback_proxies:
-                    print(f"  🔄 切换到代理模式...")
-                    self.using_proxy = True
-                    time.sleep(2)
-                    continue
-
-                # 如果已经在用代理或没有备用代理，进行重试
+                # 请求失败，进行重试
                 if attempt < max_retries - 1:
                     wait_time = random.randint(3, 8)
                     print(f"  💤 等待 {wait_time} 秒后重试 ({attempt + 1}/{max_retries})")
@@ -178,11 +157,8 @@ class GitHubRepoCrawler:
                         # 处理描述
                         description = (repo['description'] or '').replace('\n', ' ').replace('\r', '').strip()
 
-                        # 过滤条件：描述包含中文 或 描述超过300字
-                        has_chinese = bool(re.search(r'[\u4e00-\u9fff]', description))
-                        too_long = len(description) > 300
-
-                        if has_chinese or too_long:
+                        # 过滤条件：描述超过300字（中文项目正常保留）
+                        if len(description) > 300:
                             filtered_count += 1
                             continue
 
@@ -192,10 +168,9 @@ class GitHubRepoCrawler:
                             'id': repo_id,
                             'name': repo['name'],
                             'user': repo['owner']['login'],
-                            'discription': description,
+                            'description': description,
                             'star': repo['stargazers_count'],
                             'update time': repo['updated_at'],
-                            'year': float(repo['updated_at'][:4]),
                             'url': repo['html_url'],
                             'created_time': float(repo['created_at'][:4]),
                         })
@@ -220,7 +195,7 @@ class GitHubRepoCrawler:
         """
         保存到 CSV 文件
         """
-        headers = ['id', 'name', 'user', 'discription', 'star', 'update time', 'year', 'url', 'created_time']
+        headers = ['id', 'name', 'user', 'description', 'star', 'update time', 'url', 'created_time']
 
         with open(filename, 'w', newline='', encoding='utf-8-sig') as f:
             writer = csv.DictWriter(f, headers)
@@ -238,10 +213,6 @@ def main():
     # 配置
     # 优先从环境变量读取 (CI 会自动注入 GITHUB_TOKEN)，本地可留空走未认证模式
     token = os.environ.get('GITHUB_TOKEN', '').strip()  # 可选: 也可在这里硬编码 GitHub Token
-    fallback_proxies = {  # 备用代理（直连失败时自动切换）
-        'http': 'http://192.168.17.1:10808',
-        'https': 'http://192.168.17.1:10808',
-    }
     keywords = ['awesome-security', 'awesome_cybersecurity']
     max_pages = 5   # 每个关键词最多爬取页数 (每页100条)
     per_page = 100
@@ -254,12 +225,10 @@ def main():
     print(f"最小 stars: {min_stars}")
     print(f"每页数量: {per_page}")
     print(f"最大页数: {max_pages}")
-    print(f"默认连接: 直连 (无代理)")
-    print(f"备用代理: {fallback_proxies['https'] if fallback_proxies else '无'}")
     print(f"认证: {'是' if token else '否 (60次/小时限制)'}")
     print("=" * 50)
 
-    crawler = GitHubRepoCrawler(token=token, fallback_proxies=fallback_proxies)
+    crawler = GitHubRepoCrawler(token=token)
     repos = crawler.crawl_all(
         keywords=keywords,
         max_pages=max_pages,

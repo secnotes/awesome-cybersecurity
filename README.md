@@ -32,7 +32,6 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 
 ## Comprehensive
 
-- [Darkmoon](https://github.com/ASCIT31/Dark-Moon) - Open source autonomous penetration testing platform (GPLv3). 50 specialist agents over MCP with proof of exploitation on every finding, runs locally.
 - [awesome-security](https://github.com/sbilly/awesome-security) - A collection of *awesome* software, libraries, documents, books, resources and cools stuffs about security.
 - [awesome-security-hardening](https://github.com/decalage2/awesome-security-hardening) - A collection of awesome security hardening guides, tools and other resources.
 - [awesome-cyber-security](https://github.com/fabionoth/awesome-cyber-security) - A collection of awesome software, libraries, documents, books, resources and cools stuffs about security.
@@ -40,6 +39,7 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 - [awesome-sec-talks](https://github.com/PaulSec/awesome-sec-talks) - A collected list of awesome security talks.
 - [Awesome-Hacking](https://github.com/Hack-with-Github/Awesome-Hacking) - A collection of various awesome lists for hackers, pentesters and security researchers.
 - [Free_CyberSecurity_Professional_Development_Resources](https://github.com/gerryguy311/Free_CyberSecurity_Professional_Development_Resources) - An awesome list of FREE resources for training, conferences, speaking, labs, reading, etc that are free. Originally built during COVID-19 for cybersecurity professionals with downtime can take advantage of to improve their skills and marketability to come out on the other side ready to rock. Now its taken on a life of its own and will persist, C.
+- [Darkmoon](https://github.com/ASCIT31/Dark-Moon) - Open source autonomous penetration testing platform (GPLv3). 50 specialist agents over MCP with proof of exploitation on every finding, runs locally.
 
 ## System
 

@@ -1,10 +1,11 @@
 '''
-Author: Sec Notes
+Author: Security Notes (github.com/secnotes)
 Version: 1.0
-Date: 2026-09-01
-Description: 根据 awesome_security_repo.csv 重新生成 README 中引用的两张数据可视化图
+Date: 2026-09-21
+Description: Regenerate the two README data-visualization charts from awesome_security_repo.csv
+描述: 根据 awesome_security_repo.csv 重新生成 README 中引用的两张数据可视化图
 输出:
-  - images/top_repositories.png   按 star 排序的 Top 20 仓库
+  - images/top_repositories.png   按 star 统计的 Top 20 仓库占比饼图
   - images/trend_repositories.png  按创建年份统计的仓库数量趋势
 用法: python3 update_visualization.py
 '''
@@ -17,12 +18,21 @@ import matplotlib
 
 matplotlib.use('Agg')  # 非交互后端，无需显示器
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
 
 # 统一配色
 BAR_COLOR = '#3b82f6'
-ACCENT_COLOR = '#1d4ed8'
 TEXT_COLOR = '#1f2937'
+MUTED_COLOR = '#6b7280'
 GRID_COLOR = '#e5e7eb'
+
+# 饼图: 蓝色有序色阶 (浅->深, 已经官方调色板校验 --ordinal 通过),
+# 名次越靠前颜色越深; Other 切片用中性灰
+PIE_RAMP = ['#86b6ef', '#61a0ea', '#3987e5', '#2871ca',
+            '#1c5cab', '#14488b', '#0d366b']
+OTHER_COLOR = MUTED_COLOR
+NAMED_SLICES = 7  # Top 20 中前 N 名单独成切片，其余合并为 Other
 
 # 仓库根目录 (脚本可在任意 cwd 下运行)
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -50,41 +60,85 @@ def load_data():
 
 
 def plot_top_repositories(df):
-    '''Top N 仓库按 star 横向条形图'''
-    top = df.sort_values('star', ascending=False).head(TOP_N).iloc[::-1]
+    '''Top N 仓库按 star 占比画环形饼图: 前几名独立切片，尾部合并 Other'''
+    top = df.sort_values('star', ascending=False).head(TOP_N)
     labels = (top['user'] + '/' + top['name']).tolist()
     stars = top['star'].astype(int).tolist()
 
-    fig, ax = plt.subplots(figsize=(12, 7), dpi=150)
+    # 聚合: 前 NAMED_SLICES 名 + Other
+    named_labels = labels[:NAMED_SLICES]
+    named_stars = stars[:NAMED_SLICES]
+    tail_labels = labels[NAMED_SLICES:]
+    tail_stars = stars[NAMED_SLICES:]
+    other_stars = sum(tail_stars)
 
-    bars = ax.barh(labels, stars, color=BAR_COLOR, edgecolor='white', height=0.7)
+    values = named_stars + [other_stars]
+    # 名次越靠前颜色越深; Other 用灰色
+    colors = PIE_RAMP[:NAMED_SLICES][::-1] + [OTHER_COLOR]
 
-    ax.set_xlabel('Stars', fontsize=12, color=TEXT_COLOR)
-    # 标题相对整张图居中 (set_title 居中于绘图区, 长标签会使其偏左)
+    fig, ax = plt.subplots(figsize=(14, 8), dpi=150)
+
+    _, _, autotexts = ax.pie(
+        values,
+        colors=colors,
+        startangle=90,
+        counterclock=False,
+        autopct=lambda p: f'{p:.1f}%',
+        pctdistance=0.79,
+        wedgeprops={'width': 0.42, 'edgecolor': 'white', 'linewidth': 2},
+        textprops={'color': TEXT_COLOR, 'fontsize': 10},
+    )
+    # 百分比文字: 浅色切片用深字、深色切片用白字, 保证可读
+    light_slices = {'#86b6ef', '#61a0ea', '#3987e5'}
+    for text, color in zip(autotexts, colors):
+        text.set_color(TEXT_COLOR if color in light_slices else 'white')
+        text.set_fontsize(10)
+        text.set_fontweight('bold')
+
+    # 环心: Top N 总 star 数
+    total = sum(values)
+    ax.text(0, 0.06, f'Top {TOP_N}', ha='center', va='center',
+            fontsize=14, color=TEXT_COLOR, fontweight='bold')
+    ax.text(0, -0.09, f'{total:,} stars', ha='center', va='center',
+            fontsize=12, color=MUTED_COLOR)
+
     fig.suptitle(f'Top {TOP_N} Awesome Cybersecurity Repositories by Stars',
-                 fontsize=16, color=TEXT_COLOR, y=0.98, fontweight='bold')
+                 fontsize=16, color=TEXT_COLOR, y=0.97, fontweight='bold')
 
-    # 数值标注
-    xmax = max(stars)
-    for bar, value in zip(bars, stars):
-        ax.text(bar.get_width() + xmax * 0.01,
-                bar.get_y() + bar.get_height() / 2,
-                f'{value:,}',
-                va='center', ha='left', fontsize=9, color=TEXT_COLOR)
+    # 图例: 独立切片 + Other + 尾部全部仓库 (无色块, 弱化缩进显示)
+    n_tail = len(tail_labels)
+    handles = [
+        Patch(facecolor=c, edgecolor='white',
+              label=f'{lab}  {s:,}')
+        for c, lab, s in zip(colors[:NAMED_SLICES], named_labels, named_stars)
+    ]
+    handles.append(Patch(facecolor=OTHER_COLOR, edgecolor='white',
+                         label=f'Other ({n_tail} repositories)  {other_stars:,}'))
+    handles.extend(
+        Line2D([0], [0], marker='', linestyle='',
+               label=f'   {lab}  {s:,}')
+        for lab, s in zip(tail_labels, tail_stars)
+    )
+    legend = fig.legend(
+        handles=handles,
+        loc='center left',
+        bbox_to_anchor=(0.72, 0.5),
+        fontsize=9,
+        frameon=False,
+        handlelength=1.4,
+        handleheight=1.1,
+    )
+    # 尾部条目弱化
+    for text in legend.get_texts()[-n_tail:]:
+        text.set_color(MUTED_COLOR)
+        text.set_fontsize(8.5)
 
-    ax.set_xlim(0, xmax * 1.12)
-    ax.xaxis.set_major_formatter(
-        plt.FuncFormatter(lambda x, _: f'{int(x):,}'))
-    ax.grid(axis='x', color=GRID_COLOR, linewidth=0.8)
-    ax.set_axisbelow(True)
-    ax.spines[['top', 'right']].set_visible(False)
-    ax.tick_params(axis='y', labelsize=9, colors=TEXT_COLOR)
-    ax.tick_params(axis='x', labelsize=10, colors=TEXT_COLOR)
-
-    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    ax.axis('equal')
+    fig.tight_layout(rect=[0, 0, 0.7, 0.95])
     fig.savefig(TOP_IMG)
     plt.close(fig)
-    print(f'✅ 已生成 {TOP_IMG} ({len(top)} 个仓库)')
+    print(f'✅ 已生成 {TOP_IMG} ({NAMED_SLICES} 个独立切片 + '
+          f'Other/{n_tail}, 共 {TOP_N} 个仓库)')
 
 
 def plot_trend(df):
