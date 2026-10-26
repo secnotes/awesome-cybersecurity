@@ -111,6 +111,7 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 - [Awesome-SOAR](https://github.com/correlatedsecurity/Awesome-SOAR) - A curated Cyber "Security Orchestration, Automation and Response (SOAR)" awesome list.
 - [awesome-ctf](https://github.com/apsdehal/awesome-ctf) - A curated list of CTF frameworks, libraries, resources and softwares.
 - [oopssec-store](https://github.com/kOaDT/oss-oopssec-store) - An intentionally vulnerable e-commerce application built with Next.js for web security training and CTF practice.
+- [Website-Vulnerability-Scanner](https://github.com/RanaKhan77/Website-Vulnerability-Scanner) - Self-hosted web vulnerability scanner with 200 deterministic modules covering the OWASP Top 10, CMS and framework fingerprinting, TLS, DNS and email misconfigurations, exposed services and AI/LLM attack surfaces, with evidence-based PDF reporting and continuous monitoring.
 
 ## Information
 
