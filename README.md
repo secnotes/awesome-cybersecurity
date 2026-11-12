@@ -111,6 +111,8 @@ Awesome cybersecurity repositories (Data is automatically updated regularly)
 - [Awesome-SOAR](https://github.com/correlatedsecurity/Awesome-SOAR) - A curated Cyber "Security Orchestration, Automation and Response (SOAR)" awesome list.
 - [awesome-ctf](https://github.com/apsdehal/awesome-ctf) - A curated list of CTF frameworks, libraries, resources and softwares.
 - [oopssec-store](https://github.com/kOaDT/oss-oopssec-store) - An intentionally vulnerable e-commerce application built with Next.js for web security training and CTF practice.
+- [web-security-fixtures](https://github.com/Excession-Labs/web-security-fixtures) - Local web and API security fixtures with vulnerable and fixed modes, verifiers, and recorded runs.
+- [Indirect prompt injection lab](https://github.com/Excession-Labs/prompt-injection-lab) - Code and data for testing indirect prompt injection and defenses against a mock support agent.
 
 ## Information
 
